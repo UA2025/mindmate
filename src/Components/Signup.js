@@ -1,147 +1,138 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import './Com.css';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import Navbarr from './Navbarr';
+import Footer from './Footer';
+import logo1 from '../assets/blue-logo.png';
+import axios from 'axios'; 
+import '../styles/signupstyle.css';
 
-const Signup = () => {
-    const history = useNavigate(); // Change this to navigate
-    const [email, setEmail] = useState('');
-    const [username, setName] = useState('');
-    const [password, setPassword] = useState('');
-    const [tab, setTab] = useState("sign-up"); // Default tab
+const SignUp = (props) => {
+    const id = props._id;
+    const name = props.username;
 
-    async function submit(e) {
+    const [formData, setFormData] = useState({
+        username: '',
+        email: '',
+        password: ''
+    });
+
+    const [signup, setSignup] = useState(false);
+    const [userExists, setUserExists] = useState(false);
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-      
+    
         try {
-            let action = "login"; 
-        if (tab === "sign-up") {
-            action = "signup"; 
-        }
-
-        const response = await axios.post("http://localhost:8000/sig", {
-            username, 
-            email,
-            password,
-            action
-        });
-
-            
-            console.log("Response data:", response.data);
-            console.log("Tab:", tab);
-            if (response.data === "exist" && tab === "sign-in") {
-console.log("data has logged",username);
-
-                history("/nav", { state: { id: username } });
-            } else if (response.data === "notexist" && tab === "sign-in") {
-                alert("User have not signed up");
-            } else if (response.data === "exist" && tab === "sign-up") {
-                alert("User already exists");
-            } else if (response.data === "notexist" && tab === "sign-up") {
-              console.log("data is new",username);
-
-                history("/nav", { state: { id: username ,email1:email} });
+            const response = await fetch('http://localhost:8000/sig', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: formData.username,
+                    email: formData.email,
+                    password: formData.password,
+                    action: 'signup'
+                })
+            });
+    
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+    
+            const responseData = await response.json();
+    
+            if (responseData === 'success') {
+                alert('Sign up successful!');
+                setSignup(true);
+                // Redirect to login page after successful signup
+                window.location.href = '/login'; // Use window.location.href to navigate
+            } else if (responseData === 'exist') {
+                alert('User already exists!');
+                setUserExists(true);
+            } else {
+                alert('Sign up failed!');
+                setUserExists(true);
             }
         } catch (error) {
-            alert("Wrong details");
-            console.error(error);
+            console.error('Error:', error);
+            alert('Sign up failed!');
         }
+    };
+     if (signup) {
+        return <Link to={`/login/${id}/${encodeURIComponent(name)}`} />;
     }
 
+
     return (
-        <div>
-          <h1>{username}</h1>
-          <h1>{email}</h1>
-          <h1>{password}</h1>
-        <div className="login-wrap">
-            <div className="login-html">
-           <input id="tab-1" type="radio" name="tab" className="sign-in" defaultChecked={tab === "sign-in"} onChange={() => setTab("sign-in")} />
+        <>
+            <Navbarr />
 
-<label htmlFor="tab-1" className="tab">
-    Sign In
-</label>
-<input id="tab-2" type="radio" name="tab" className="sign-up" defaultChecked={tab === "sign-up"} onChange={() => setTab("sign-up")} />
-
-<label htmlFor="tab-2" className="tab">
-    Sign Up
-</label>
-
-
-<div className="login-form">
-    <form   onSubmit={submit}>
-  
-        {tab === "sign-in" && (
-            <div className="sign-in-htm">
-                <div className="group">
-                    <label htmlFor="user" className="label">
-                        Username
-                    </label>
-                    
-                    <input id="user" type="text" className="input" onChange={(e) => setName(e.target.value)}/>
-                </div>
-                <div className="group">
-                    <label htmlFor="pass" className="label">
-                        Password
-                    </label>
-                    <input id="pass-sign-in" type="password" className="input"onChange={(e) => setPassword(e.target.value)}  />
-                </div>
-                <div className="group">
-                    <input id="check-sign-in" type="checkbox" className="check" defaultChecked={false} />
-                    <label htmlFor="check-sign-in">
-                        <span className="icon"></span> Keep me Signed in
-                    </label>
-                </div>
-                <div className="group">
-                    <button type="submit" className="button">Sign In</button>
-                </div>
-            </div>
-                        )}
-
-{tab === "sign-up" && (
-            <div className="sign-up-htm">
-               <div className="group">
-                                    <label htmlFor="user" className="label">
-                                        Username
-                                    </label>
-                                    <input id="user" type="text" className="input" onChange={(e) => setName(e.target.value)}/>
-                                </div>
-                                <div className="group">
-                                    <label htmlFor="pass-sign-up" className="label">
-                                        Password
-                                    </label>
-                                    <input id="pass-sign-up" type="password" className="input" data-type="password" onChange={(e) => setPassword(e.target.value)} />
-                                </div>
-                                <div className="group">
-                                    <label htmlFor="pass-repeat" className="label">
-                                        Repeat Password
-                                    </label>
-                                    <input id="pass-repeat" type="password" className="input" data-type="password"  />
-                                </div>
-                                <div className="group">
-                                    <label htmlFor="email" className="label">
-                                        Email Address
-                                    </label>
-                                    <input id="email" type="text" className="input" onChange={(e) => setEmail(e.target.value)} />
-                                </div>
-                                
-                                <div className="group">
-                                <button type="submit" className="button">
-                            {tab === "sign-in" ? "Sign In" : "Sign Up"}
-                        </button>
-                                </div>
-                                <div className="hr"></div>
-                                <div className="foot-lnk">
-                                    <label htmlFor="tab-1">Already a Member?</label>
-                                </div>
-                            </div>)}
-                          
-</form>
-                    
+            <div className="container my-5">
+                <div className="bg-image row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg">
+                    <div className="col-lg-7 p-3 p-lg-5 pt-lg-3">
+                        <div className="d-flex align-items-center mb-3">
+                            <img src={logo1} alt="Logo" className="logo" />
+                            <h1 className="display-4 fw-bold lh-1 text-body-emphasis1">MindMate</h1>
+                        </div>
+                        <p className="h4 fw text-body-emphasis1 lh-1 mb-3">Embracing growth, one step at a time.</p>
+                        <p className="text-body-emphasis1 lead">No account yet? Sign up now to get access to exclusive features and content. If you already have an account, please log in to continue.</p>
+                    </div>
+                    <div className="form-side col-md-10 mx-auto col-lg-5">
+                        <form className="bg-color p-4 p-md-5 rounded-3" onSubmit={handleSubmit}>
+                            <div className="form-floating mb-3">
+                                <input
+                                    type="text"
+                                    className="form-feild-color form-control"
+                                    id="username"
+                                    name="username" // Add name attribute
+                                    placeholder="Username"
+                                    value={formData.username}
+                                    onChange={handleChange}
+                                />
+                                <label htmlFor="username">Username</label>
+                            </div>
+                            <div className="form-floating mb-3">
+                                <input
+                                    type="email"
+                                    className="form-feild-color form-control"
+                                    id="email"
+                                    name="email" // Add name attribute
+                                    placeholder="name@example.com"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                />
+                                <label htmlFor="email">Email address</label>
+                            </div>
+                            <div className="form-floating mb-3">
+                                <input
+                                    type="password"
+                                    className="form-feild-color form-control"
+                                    id="password"
+                                    name="password" // Add name attribute
+                                    placeholder="Password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                />
+                                <label htmlFor="password">Password</label>
+                            </div>
+                            {userExists ? (
+                                <Link to={`/login/${id}/${encodeURIComponent(name)}`} className="btn-custom w-100 btn btn-lg fw-bold">Login First</Link>
+                            ) : (
+                                <button className="btn-custom w-100 btn btn-lg fw-bold" type="submit">SignUp</button>
+                            )}
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-        </div>
+
+            <Footer />
+        </>
     );
 };
 
-export default Signup;
+export default SignUp;

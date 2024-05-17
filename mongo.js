@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-mongoose.connect("mongodb://127.0.0.1:27017/mindmate")
+mongoose.connect("mongodb+srv://l215306:6nMZveNaBcu4GXfP@cluster0.la3psuu.mongodb.net/trial")
     .then(() => {
         console.log("MongoDB connected");
     })
@@ -8,4 +8,4 @@ mongoose.connect("mongodb://127.0.0.1:27017/mindmate")
         console.error("MongoDB connection error:", error);
     });
 
-module.exports = mongoose;
+module.exports = { mongoose };

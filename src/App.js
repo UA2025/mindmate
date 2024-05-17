@@ -1,18 +1,24 @@
 import './App.css';
-import Navbar from './Components/Navbar';
-import Articles from './Components/Articles';
-import ArticleContainer from './Components/Articlecontainer';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Signup from './Components/Signup';
-function App() {
-  return (
-    <div>
-         <a href='/sig'>Enter</a>
-       
 
+import { Provider } from 'react-redux';
+import store from './redux/store';
+import { useState } from 'react';
+
+function App() {
+  const [count,setCount]=useState(0)
+
+  return (
+   
+    <div>
+
+      
     </div>
     
   );
 }
+const mapStateToProps = (state) => ({
+  count: state.count.count
+});
 
-export default App;
+export default App
+

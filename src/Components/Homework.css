@@ -3,9 +3,26 @@
     width: 50%; /* Adjust width as needed */
     height: 60%; /* Adjust height as needed */
     top: 20%;
-    left: 20%;
+    left: 30%;
   }
-  
+  .input-field {
+    position: absolute;
+   left: 900px;
+  top:11px;
+    
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+  }
+  .create-button {
+    display: flex;
+    background-color: #B96BF0;
+    width: 100px;
+    position: relative;
+   left: 500px;
+    margin: 20px auto;
+    text-align: right;
+  }
   .homework1-icon {
     color: black;
     background-color: #FBDCE4;
@@ -19,7 +36,7 @@
   .homework2-container {
     position: absolute;
      top: 40%;
-    left: 20%;
+    left: 30%;
   }
   
   .homework2-icon {
